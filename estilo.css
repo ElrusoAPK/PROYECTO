@@ -1,0 +1,251 @@
+/* =========================
+   ESTILOS GENERALES
+========================= */
+
+body{
+    background:#f5f7fa;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition:all .3s ease;
+}
+
+/* =========================
+   HERO SECTION
+========================= */
+
+.hero{
+    background:linear-gradient(
+    135deg,
+    #0b1727,
+    #1d4ed8
+    );
+
+    color:white;
+
+    padding:120px 20px;
+    text-align:center;
+}
+
+.hero h1{
+    font-size:55px;
+    font-weight:700;
+}
+
+.hero p{
+    font-size:20px;
+    opacity:.9;
+}
+
+/* =========================
+   TARJETAS INFORMATIVAS
+========================= */
+
+.info-card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+    height:100%;
+    transition:.3s;
+}
+
+.info-card:hover{
+    transform:translateY(-5px);
+}
+
+/* =========================
+   KPI CARDS
+========================= */
+
+.kpi{
+    background:linear-gradient(
+    135deg,
+    #112240,
+    #1d4ed8
+    );
+
+    color:white;
+
+    padding:30px;
+    border-radius:20px;
+
+    text-align:center;
+
+    box-shadow:0 10px 20px rgba(0,0,0,.15);
+
+    transition:.3s;
+}
+
+.kpi:hover{
+    transform:translateY(-5px);
+}
+
+.kpi h2{
+    font-size:42px;
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.kpi p{
+    margin:0;
+    font-size:16px;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card{
+    border:none;
+    border-radius:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.card:hover{
+    box-shadow:0 10px 25px rgba(0,0,0,.12);
+}
+
+/* =========================
+   MAPA
+========================= */
+
+#map{
+    height:600px;
+    border-radius:15px;
+    overflow:hidden;
+}
+
+/* =========================
+   GRAFICAS
+========================= */
+
+canvas{
+    max-height:450px;
+}
+
+/* =========================
+   TABLAS
+========================= */
+
+.table{
+    font-size:14px;
+}
+
+.table thead{
+    position:sticky;
+    top:0;
+    z-index:1;
+}
+
+.table-hover tbody tr:hover{
+    background:#e9f2ff;
+}
+
+/* =========================
+   FILTROS
+========================= */
+
+.form-select,
+.form-control{
+    border-radius:12px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+    background:linear-gradient(
+    135deg,
+    #0b1727,
+    #112240
+    );
+}
+
+/* =========================
+   RESUMEN EJECUTIVO
+========================= */
+
+#resumen{
+    font-size:17px;
+    line-height:1.8;
+}
+
+/* =========================
+   MODO OSCURO
+========================= */
+
+.dark{
+    background:#0f172a;
+    color:white;
+}
+
+.dark header{
+    background:#020617 !important;
+}
+
+.dark .card{
+    background:#1e293b;
+    color:white;
+}
+
+.dark .kpi{
+    background:linear-gradient(
+    135deg,
+    #020617,
+    #0f172a
+    );
+}
+
+.dark .table{
+    color:white;
+}
+
+.dark .table-hover tbody tr:hover{
+    background:#334155;
+}
+
+.dark .form-control,
+.dark .form-select{
+    background:#334155;
+    color:white;
+    border:1px solid #475569;
+}
+
+.dark .form-control:focus,
+.dark .form-select:focus{
+    background:#334155;
+    color:white;
+}
+
+.dark .alert{
+    background:#14532d;
+    color:white;
+    border:none;
+}
+
+.dark canvas{
+    background:white;
+    border-radius:10px;
+    padding:10px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:768px){
+
+    .hero h1{
+        font-size:38px;
+    }
+
+    .kpi h2{
+        font-size:30px;
+    }
+
+    #map{
+        height:450px;
+    }
+
+}
