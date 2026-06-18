@@ -13,7 +13,7 @@ let datosFiltrados = [];
 document.addEventListener("DOMContentLoaded", () => {
 
     Papa.parse(
-        "datos/SSNMX_catalogo_19000601_20260602.csv",
+        "SSNMX_catalogo_19000601_20260602.csv",
         {
             download: true,
             header: true,
