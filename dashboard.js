@@ -8,72 +8,27 @@ let datosFiltrados = [];
 /* ====================================
    CARGAR CSV
 ==================================== */
-
 Papa.parse("SSNMX_catalogo_filtrado.csv", {
-download: true,
-header: true,
-skipEmptyLines: true,
+    download: true,
+    header: true,
+    skipEmptyLines: true,
 
-complete: function(resultado){
+    complete: function (resultado) {
 
-    console.log("Columnas:", resultado.meta.fields);
-    console.log("Registros CSV:", resultado.data.length);
+        datosOriginales = resultado.data.filter(d =>
+            parseInt(d.Anio) >= 1981
+        );
 
-    datosOriginales = resultado.data
-    .map(d => {
+        console.log(
+            "Registros válidos:",
+            datosOriginales.length
+        );
 
-        const fecha =
-        (d.Fecha || "").trim();
+        cargarAnios();
+        aplicarFiltros();
+    },
 
-        const anio =
-        fecha.substring(0,4);
-
-        return {
-
-            Fecha: fecha,
-            Anio: anio,
-            Hora: (d.Hora || "").trim(),
-
-            Magnitud:
-            parseFloat(d.Magnitud) || 0,
-
-            Profundidad:
-            parseFloat(d.Profundidad) || 0,
-
-            Referencia:
-            (d["Referencia de localizacion"] || "")
-            .trim()
-
-        };
-
-    })
-    .filter(d =>
-
-        d.Fecha &&
-        d.Anio &&
-        d.Magnitud >= 3 &&
-        parseInt(d.Anio) >= 1981
-
-    );
-
-    console.log(
-        "Registros válidos:",
-        datosOriginales.length
-    );
-
-    cargarAnios();
-    aplicarFiltros();
-
-},
-
-error: function(error){
-
-    console.error(error);
-
-    alert(
-        "Error al cargar el archivo CSV."
-    );
-
-}
-
+    error: function (error) {
+        console.error("Error al cargar el CSV:", error);
+    }
 });
