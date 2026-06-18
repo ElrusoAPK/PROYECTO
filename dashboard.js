@@ -1,213 +1,529 @@
-let map;
-let data = [];
-let markers = [];
+let mapa;
+let chartMagnitud;
+let chartProfundidad;
+let chartAnual;
+
+let datosOriginales = [];
+let datosFiltrados = [];
+
+/* ====================================
+   CARGAR CSV AUTOMÁTICAMENTE
+==================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    map = L.map("map").setView([23.6, -102.5], 5);
+    Papa.parse(
+        "SSNMX_catalogo_19000601_20260602.csv",
+        {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "OpenStreetMap"
-    }).addTo(map);
+            beforeFirstChunk: function(chunk){
 
-    Papa.parse("SSNMX_catalogo_filtrado.csv", {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
+                const lineas = chunk.split("\n");
 
-        complete: function(res) {
+                return lineas
+                .slice(4)
+                .join("\n");
 
-            console.log("CSV cargado:", res.data[0]);
+            },
 
-            data = res.data.map(d => {
+            complete: function(resultado){
 
-                const fecha = new Date(d.Fecha || d.fecha);
+                datosOriginales = resultado.data;
 
-                return {
-                    lat: parseFloat(d.Latitud || d.lat),
-                    lon: parseFloat(d.Longitud || d.lon),
-                    mag: parseFloat(d.Magnitud || d.magnitud),
-                    depth: parseFloat(d.Profundidad || d.profundidad),
-                    fecha: fecha
-                };
+                cargarAnios();
 
-            }).filter(d =>
-                !isNaN(d.lat) &&
-                !isNaN(d.lon) &&
-                !isNaN(d.mag) &&
-                d.fecha instanceof Date &&
-                !isNaN(d.fecha)
-            );
+                aplicarFiltros();
 
-            cargarAnios();
-            render();
+            },
+
+            error: function(error){
+
+                console.error(error);
+
+                alert(
+                    "Error al cargar el CSV."
+                );
+
+            }
+
         }
-    });
 
-    const btn = document.getElementById("btnFiltrar");
-    if (btn) btn.onclick = render;
+    );
+
 });
 
+/* ====================================
+   CARGAR AÑOS EN FILTRO
+==================================== */
 
-// =========================
-// AÑOS
-// =========================
-function cargarAnios() {
+function cargarAnios(){
 
-    const years = [...new Set(data.map(d => d.fecha.getFullYear()))]
-        .filter(Boolean)
-        .sort((a, b) => a - b);
+    const filtro =
+    document.getElementById(
+    "filtroAnio"
+    );
 
-    const ini = document.getElementById("anioInicio");
-    const fin = document.getElementById("anioFin");
+    filtro.innerHTML =
+    '<option value="">Todos los años</option>';
 
-    if (!ini || !fin) return;
+    const anios = new Set();
 
-    ini.innerHTML = "";
-    fin.innerHTML = "";
+    datosOriginales.forEach(d=>{
 
-    years.forEach(y => {
-        ini.innerHTML += `<option value="${y}">${y}</option>`;
-        fin.innerHTML += `<option value="${y}">${y}</option>`;
+        if(!d.Fecha) return;
+
+        anios.add(
+        d.Fecha.substring(0,4)
+        );
+
     });
 
-    ini.value = years[0] || "";
-    fin.value = years[years.length - 1] || "";
-}
+    [...anios]
+    .sort()
+    .forEach(anio=>{
 
+        filtro.innerHTML +=
 
-// =========================
-// RENDER GENERAL
-// =========================
-function render() {
+        `<option value="${anio}">
+            ${anio}
+        </option>`;
 
-    const iniEl = document.getElementById("anioInicio");
-    const finEl = document.getElementById("anioFin");
-
-    if (!iniEl || !finEl) return;
-
-    const ini = parseInt(iniEl.value);
-    const fin = parseInt(finEl.value);
-
-    const filtered = data.filter(d => {
-
-        const y = d.fecha.getFullYear();
-
-        if (isNaN(ini) || isNaN(fin)) return true;
-
-        return y >= ini && y <= fin;
     });
 
-    drawMap(filtered);
-    drawTable(filtered);
-    spearman(filtered);
-
-    // ================= KPI =================
-    const totalEl = document.getElementById("total");
-    const magEl = document.getElementById("magProm");
-    const profEl = document.getElementById("profProm");
-
-    const mags = filtered.map(d => d.mag);
-    const profs = filtered.map(d => d.depth);
-
-    const avg = arr =>
-        arr.reduce((a, b) => a + b, 0) / (arr.length || 1);
-
-    if (totalEl) totalEl.innerText = filtered.length;
-    if (magEl) magEl.innerText = avg(mags).toFixed(2);
-    if (profEl) profEl.innerText = avg(profs).toFixed(2);
 }
 
+/* ====================================
+   EVENTOS FILTROS
+==================================== */
 
-// =========================
-// MAPA
-// =========================
-function drawMap(filtered) {
+document
+.getElementById("filtroAnio")
+.addEventListener(
+"change",
+aplicarFiltros
+);
 
-    markers.forEach(m => map.removeLayer(m));
-    markers = [];
+document
+.getElementById("filtroMagnitud")
+.addEventListener(
+"change",
+aplicarFiltros
+);
 
-    filtered.forEach(d => {
+/* ====================================
+   APLICAR FILTROS
+==================================== */
 
-        const color =
-            d.mag >= 7 ? "red" :
-            d.mag >= 6 ? "orange" :
-            d.mag >= 5 ? "yellow" :
-            "blue";
+function aplicarFiltros(){
 
-        const marker = L.circleMarker([d.lat, d.lon], {
-            radius: Math.max(d.mag * 2, 3),
-            color,
-            fillOpacity: 0.7
-        }).addTo(map);
+    const anio =
+    document.getElementById(
+    "filtroAnio"
+    ).value;
 
-        marker.bindPopup(`
-            <b>Magnitud:</b> ${d.mag}<br>
-            <b>Profundidad:</b> ${d.depth} km<br>
-            <b>Fecha:</b> ${d.fecha.toLocaleString()}
-        `);
+    const magnitud =
+    document.getElementById(
+    "filtroMagnitud"
+    ).value;
 
-        markers.push(marker);
+    datosFiltrados =
+    datosOriginales.filter(d=>{
+
+        let cumpleAnio = true;
+        let cumpleMagnitud = true;
+
+        if(anio){
+
+            cumpleAnio =
+            d.Fecha &&
+            d.Fecha.startsWith(anio);
+
+        }
+
+        if(magnitud){
+
+            cumpleMagnitud =
+            parseFloat(d.Magnitud) >=
+            parseFloat(magnitud);
+
+        }
+
+        return (
+            cumpleAnio &&
+            cumpleMagnitud
+        );
+
     });
+
+    procesarDatos(
+    datosFiltrados
+    );
+
 }
 
+/* ====================================
+   KPIs
+==================================== */
 
-// =========================
-// TABLA
-// =========================
-function drawTable(filtered) {
+function procesarDatos(datos){
 
-    const tbody = document.getElementById("tabla");
-    if (!tbody) return;
+    const magnitudes =
+    datos
+    .map(d=>parseFloat(d.Magnitud))
+    .filter(n=>!isNaN(n));
+
+    const profundidades =
+    datos
+    .map(d=>parseFloat(d.Profundidad))
+    .filter(n=>!isNaN(n));
+
+    document
+    .getElementById("total")
+    .innerText =
+    datos.length.toLocaleString();
+
+    const promedioMag =
+    magnitudes.length
+    ?
+    magnitudes.reduce((a,b)=>a+b,0)
+    /
+    magnitudes.length
+    :
+    0;
+
+    const promedioProf =
+    profundidades.length
+    ?
+    profundidades.reduce((a,b)=>a+b,0)
+    /
+    profundidades.length
+    :
+    0;
+
+    document
+    .getElementById(
+    "magnitudPromedio"
+    )
+    .innerText =
+    promedioMag.toFixed(2);
+
+    document
+    .getElementById(
+    "profundidadPromedio"
+    )
+    .innerText =
+    promedioProf.toFixed(2);
+
+    document
+    .getElementById(
+    "maxMagnitud"
+    )
+    .innerText =
+    magnitudes.length
+    ?
+    Math.max(...magnitudes)
+    :
+    0;
+
+    crearMapa(datos);
+
+    crearTabla(datos);
+
+    crearGraficaMagnitud(
+    magnitudes
+    );
+
+    crearGraficaProfundidad(
+    profundidades
+    );
+
+    crearGraficaAnual(
+    datos
+    );
+
+    document
+    .getElementById(
+    "resumen"
+    )
+    .innerHTML =
+
+    `
+    <strong>
+    ${datos.length.toLocaleString()}
+    </strong>
+
+    eventos sísmicos analizados.
+
+    <br><br>
+
+    Magnitud promedio:
+    <strong>
+    ${promedioMag.toFixed(2)}
+    </strong>
+
+    <br>
+
+    Profundidad promedio:
+    <strong>
+    ${promedioProf.toFixed(2)} km
+    </strong>
+
+    <br>
+
+    Magnitud máxima:
+    <strong>
+    ${magnitudes.length ?
+    Math.max(...magnitudes)
+    : 0}
+    </strong>
+    `;
+
+}
+
+/* ====================================
+   MAPA
+==================================== */
+
+function crearMapa(datos){
+
+    if(mapa){
+
+        mapa.remove();
+
+    }
+
+    mapa =
+    L.map("map")
+    .setView(
+    [23.6345,-102.5528],
+    5
+    );
+
+    L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    ).addTo(mapa);
+
+    datos
+    .slice(0,300)
+    .forEach(d=>{
+
+        const lat =
+        parseFloat(d.Latitud);
+
+        const lon =
+        parseFloat(d.Longitud);
+
+        if(
+            !isNaN(lat) &&
+            !isNaN(lon)
+        ){
+
+            L.marker(
+            [lat,lon]
+            )
+            .addTo(mapa)
+            .bindPopup(
+
+            `<b>Fecha:</b> ${d.Fecha}<br>
+             <b>Magnitud:</b> ${d.Magnitud}<br>
+             <b>Profundidad:</b> ${d.Profundidad} km<br>
+             <b>Ubicación:</b><br>
+             ${d["Referencia de localizacion"]}`
+
+            );
+
+        }
+
+    });
+
+}
+
+/* ====================================
+   TABLA
+==================================== */
+
+function crearTabla(datos){
+
+    const tbody =
+    document.querySelector(
+    "#tablaSismos tbody"
+    );
 
     tbody.innerHTML = "";
 
-    filtered.slice(0, 100).forEach(d => {
+    datos
+    .slice(0,100)
+    .forEach(d=>{
 
-        tbody.innerHTML += `
-            <tr>
-                <td>${d.fecha ? d.fecha.toLocaleDateString() : "-"}</td>
-                <td>${d.mag ?? "-"}</td>
-                <td>${d.depth ?? "-"}</td>
-            </tr>
+        tbody.innerHTML +=
+
+        `
+        <tr>
+            <td>${d.Fecha || "-"}</td>
+            <td>${d.Hora || "-"}</td>
+            <td>${d.Magnitud || "-"}</td>
+            <td>${d.Profundidad || "-"}</td>
+            <td>${d["Referencia de localizacion"] || "-"}</td>
+        </tr>
         `;
+
     });
+
 }
 
+/* ====================================
+   GRAFICA MAGNITUDES
+==================================== */
 
-// =========================
-// SPEARMAN
-// =========================
-function spearman(data) {
+function crearGraficaMagnitud(magnitudes){
 
-    const x = data.map(d => d.mag);
-    const y = data.map(d => d.depth);
+    if(chartMagnitud)
+    chartMagnitud.destroy();
 
-    if (x.length === 0) {
-        document.getElementById("spearman").innerText = "Sin datos";
-        return;
-    }
+    chartMagnitud =
+    new Chart(
 
-    const rank = arr =>
-        arr.map((v, i) => ({ v, i }))
-            .sort((a, b) => a.v - b.v)
-            .map((o, i) => ({ ...o, r: i + 1 }))
-            .sort((a, b) => a.i - b.i)
-            .map(o => o.r);
+        document.getElementById(
+        "graficaMagnitud"
+        ),
 
-    const rx = rank(x);
-    const ry = rank(y);
+        {
 
-    let d2 = 0;
+            type:"bar",
 
-    for (let i = 0; i < x.length; i++) {
-        d2 += Math.pow(rx[i] - ry[i], 2);
-    }
+            data:{
 
-    const n = x.length;
+                labels:
+                magnitudes
+                .slice(0,30)
+                .map((_,i)=>i+1),
 
-    const rho = 1 - (6 * d2) / (n * (n*n - 1));
+                datasets:[{
 
-    document.getElementById("spearman").innerText =
-        isNaN(rho) ? "Sin datos" : rho.toFixed(4);
+                    label:
+                    "Magnitud",
+
+                    data:
+                    magnitudes
+                    .slice(0,30)
+
+                }]
+
+            }
+
+        }
+
+    );
+
+}
+
+/* ====================================
+   GRAFICA PROFUNDIDADES
+==================================== */
+
+function crearGraficaProfundidad(profundidades){
+
+    if(chartProfundidad)
+    chartProfundidad.destroy();
+
+    chartProfundidad =
+    new Chart(
+
+        document.getElementById(
+        "graficaProfundidad"
+        ),
+
+        {
+
+            type:"line",
+
+            data:{
+
+                labels:
+                profundidades
+                .slice(0,30)
+                .map((_,i)=>i+1),
+
+                datasets:[{
+
+                    label:
+                    "Profundidad",
+
+                    data:
+                    profundidades
+                    .slice(0,30)
+
+                }]
+
+            }
+
+        }
+
+    );
+
+}
+
+/* ====================================
+   GRAFICA ANUAL
+==================================== */
+
+function crearGraficaAnual(datos){
+
+    const conteo = {};
+
+    datos.forEach(d=>{
+
+        if(!d.Fecha) return;
+
+        const anio =
+        d.Fecha.substring(0,4);
+
+        conteo[anio] =
+        (conteo[anio] || 0) + 1;
+
+    });
+
+    const labels =
+    Object.keys(conteo);
+
+    const valores =
+    Object.values(conteo);
+
+    if(chartAnual)
+    chartAnual.destroy();
+
+    chartAnual =
+    new Chart(
+
+        document.getElementById(
+        "graficaAnual"
+        ),
+
+        {
+
+            type:"bar",
+
+            data:{
+
+                labels,
+
+                datasets:[{
+
+                    label:
+                    "Sismos por Año",
+
+                    data:
+                    valores
+
+                }]
+
+            }
+
+        }
+
+    );
+
 }
