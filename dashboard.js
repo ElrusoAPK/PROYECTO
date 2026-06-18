@@ -24,8 +24,6 @@ Papa.parse("SSNMX_catalogo_filtrado.csv", {
         datosOriginales = resultado.data
         .filter(d =>
             d.Fecha &&
-            d.Magnitud &&
-            d.Latitud &&
             d.Longitud
         )
         .map(d => ({
@@ -33,8 +31,6 @@ Papa.parse("SSNMX_catalogo_filtrado.csv", {
             Fecha: d.Fecha,
             Hora: d.Hora || "",
             Magnitud: parseFloat(d.Magnitud),
-            Latitud: parseFloat(d.Latitud),
-            Longitud: parseFloat(d.Longitud),
             Profundidad: parseFloat(d.Profundidad),
             Referencia:
                 d["Referencia"] ||
@@ -388,8 +384,6 @@ function crearGraficaMagnitud(magnitudes){
 
 ```
 const rangos = {
-
-    "3-4":0,
     "4-5":0,
     "5-6":0,
     "6-7":0,
