@@ -14,9 +14,9 @@ Papa.parse("SSNMX_catalogo_filtrado.csv", {
     skipEmptyLines: true,
 
     complete: function (resultado) {
-
-        datosOriginales = resultado.data.filter(d =>
-            parseInt(d.Anio) >= 1981
+    datosOriginales = resultado.data.filter(d =>
+    d.Anio && parseInt(d.Anio) >= 1981
+);
         );
 
         console.log(
