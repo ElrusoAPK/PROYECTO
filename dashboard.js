@@ -1,47 +1,62 @@
+let map;
 let data = [];
-let filtered = [];
+let markers = [];
 
 document.addEventListener("DOMContentLoaded", () => {
 
-Papa.parse("SSNMX_catalogo_filtrado.csv", {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
+    // MAPA BASE
+    map = L.map('map').setView([23.6, -102.5], 5);
 
-    complete: function(res) {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
 
-        console.log("CSV cargado", res.data[0]);
+    // CARGAR CSV
+    Papa.parse("SSNMX_catalogo_filtrado.csv", {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
 
-        data = res.data.map(d => {
+        complete: function(res) {
 
-            const fecha = new Date(d.Fecha || d.fecha);
+            data = res.data.map(d => {
 
-            return {
-                fecha,
-                anio: fecha.getFullYear(),
-                mag: parseFloat(d.Magnitud || d.magnitud),
-                prof: parseFloat(d.Profundidad || d.profundidad)
-            };
+                const lat = parseFloat(d.Latitud || d.lat);
+                const lon = parseFloat(d.Longitud || d.lon);
 
-        }).filter(d => !isNaN(d.mag) && d.fecha);
+                const mag = parseFloat(d.Magnitud || d.magnitud);
+                const depth = parseFloat(d.Profundidad || d.profundidad);
 
-        init();
-    }
+                const fecha = new Date(d.Fecha || d.fecha);
+
+                return {
+                    lat,
+                    lon,
+                    mag,
+                    depth,
+                    fecha
+                };
+
+            }).filter(d =>
+                !isNaN(d.lat) &&
+                !isNaN(d.lon) &&
+                !isNaN(d.mag)
+            );
+
+            cargarAnios();
+            renderMarkers();
+        }
+    });
+
+    document.getElementById("filtroMag").onchange = renderMarkers;
+    document.getElementById("filtroAnio").onchange = renderMarkers;
 });
-
-function init() {
-    cargarAnios();
-    aplicarFiltros();
-
-    document.getElementById("selectAnio").onchange = aplicarFiltros;
-    document.getElementById("selectMag").onchange = aplicarFiltros;
-}
 
 function cargarAnios() {
 
-    const sel = document.getElementById("selectAnio");
+    const sel = document.getElementById("filtroAnio");
 
-    const years = [...new Set(data.map(d => d.anio))].sort();
+    const years = [...new Set(data.map(d => d.fecha.getFullYear()))].sort();
 
     sel.innerHTML = `<option value="">Todos los años</option>`;
 
@@ -50,87 +65,37 @@ function cargarAnios() {
     });
 }
 
-function aplicarFiltros() {
+function renderMarkers() {
 
-    const anio = document.getElementById("selectAnio").value;
-    const mag = parseFloat(document.getElementById("selectMag").value);
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
 
-    filtered = data.filter(d => {
+    const magFilter = parseFloat(document.getElementById("filtroMag").value);
+    const yearFilter = document.getElementById("filtroAnio").value;
 
-        let ok = true;
+    data.forEach(d => {
 
-        if (anio) ok = d.anio == anio;
-        if (mag) ok = ok && d.mag >= mag;
+        if (magFilter && d.mag < magFilter) return;
+        if (yearFilter && d.fecha.getFullYear() != yearFilter) return;
 
-        return ok;
-    });
+        const color =
+            d.mag >= 7 ? "red" :
+            d.mag >= 6 ? "orange" :
+            d.mag >= 5 ? "yellow" :
+            "blue";
 
-    render();
-}
+        const marker = L.circleMarker([d.lat, d.lon], {
+            radius: d.mag * 2,
+            color,
+            fillOpacity: 0.7
+        }).addTo(map);
 
-function render() {
+        marker.bindPopup(`
+            <b>Magnitud:</b> ${d.mag}<br>
+            <b>Profundidad:</b> ${d.depth} km<br>
+            <b>Fecha:</b> ${d.fecha.toLocaleString()}
+        `);
 
-    document.getElementById("total").textContent = filtered.length;
-
-    const mags = filtered.map(d => d.mag);
-    const profs = filtered.map(d => d.prof);
-
-    document.getElementById("magProm").textContent =
-        (mags.reduce((a,b)=>a+b,0)/mags.length || 0).toFixed(2);
-
-    document.getElementById("profProm").textContent =
-        (profs.reduce((a,b)=>a+b,0)/profs.length || 0).toFixed(2);
-
-    document.getElementById("maxMag").textContent =
-        Math.max(...mags,0).toFixed(2);
-
-    renderTable();
-    renderChart();
-}
-
-function renderTable() {
-
-    const tbody = document.getElementById("tabla");
-
-    tbody.innerHTML = "";
-
-    filtered.slice(0, 100).forEach(d => {
-
-        tbody.innerHTML += `
-            <tr>
-                <td>${d.fecha.toLocaleDateString()}</td>
-                <td>${d.mag}</td>
-                <td>${d.prof}</td>
-            </tr>
-        `;
+        markers.push(marker);
     });
 }
-
-let chart;
-
-function renderChart() {
-
-    const count = {};
-
-    filtered.forEach(d => {
-        count[d.anio] = (count[d.anio] || 0) + 1;
-    });
-
-    const labels = Object.keys(count);
-    const values = Object.values(count);
-
-    if (chart) chart.destroy();
-
-    chart = new Chart(document.getElementById("chartAnio"), {
-        type: "line",
-        data: {
-            labels,
-            datasets: [{
-                label: "Sismos por año",
-                data: values
-            }]
-        }
-    });
-}
-
-});
