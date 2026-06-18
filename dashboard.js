@@ -13,7 +13,7 @@ CARGAR CSV
 document.addEventListener("DOMContentLoaded", () => {
 
 ```
-Papa.parse("SSNMX_catalogo_19000601_20260602", {
+Papa.parse("SSNMX_catalogo_filtrado.csv", {
 
     download: true,
     header: true,
