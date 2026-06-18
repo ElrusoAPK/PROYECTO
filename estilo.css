@@ -1,52 +1,29 @@
 body {
-    font-family: Arial;
     margin: 0;
-    background: #f4f6f9;
+    font-family: Arial;
+    background: #0b1320;
+    color: white;
 }
 
 header {
-    background: #0b1320;
-    color: white;
-    padding: 20px;
-    text-align: center;
-}
-
-.container {
-    padding: 20px;
-}
-
-.kpis {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-}
-
-.card {
-    background: white;
     padding: 15px;
-    border-radius: 10px;
     text-align: center;
+    background: #111a2e;
 }
 
-.filters {
-    margin: 20px 0;
+#map {
+    height: 90vh;
+    width: 100%;
+}
+
+.panel {
     display: flex;
     gap: 10px;
+    padding: 10px;
+    background: #1c2b4a;
 }
 
 select {
-    padding: 10px;
-    border-radius: 8px;
-}
-
-table {
-    width: 100%;
-    margin-top: 20px;
-    background: white;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 6px;
 }
