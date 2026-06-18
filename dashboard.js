@@ -72,37 +72,37 @@ function render() {
         return y >= ini && y <= fin;
     });
 
+    // =========================
+    // MAPA
+    // =========================
     drawMap(filtered);
+
+    // =========================
+    // TABLA
+    // =========================
     drawTable(filtered);
+
+    // =========================
+    // SPEARMAN
+    // =========================
     spearman(filtered);
-}
 
-function drawMap(filtered) {
+    // =========================
+    // KPIs (SIDEBAR)
+    // =========================
+    document.getElementById("total").innerText = filtered.length;
 
-    markers.forEach(m => map.removeLayer(m));
-    markers = [];
+    const mags = filtered.map(d => d.mag);
+    const profs = filtered.map(d => d.depth);
 
-    filtered.forEach(d => {
+    const avg = arr =>
+        arr.reduce((a, b) => a + b, 0) / (arr.length || 1);
 
-        const color =
-            d.mag >= 7 ? "red" :
-            d.mag >= 6 ? "orange" :
-            d.mag >= 5 ? "yellow" : "blue";
+    document.getElementById("magProm").innerText =
+        avg(mags).toFixed(2);
 
-        const m = L.circleMarker([d.lat, d.lon], {
-            radius: d.mag * 2,
-            color,
-            fillOpacity: 0.7
-        }).addTo(map);
-
-        m.bindPopup(`
-            <b>Magnitud:</b> ${d.mag}<br>
-            <b>Profundidad:</b> ${d.depth}<br>
-            <b>Fecha:</b> ${d.fecha.toLocaleString()}
-        `);
-
-        markers.push(m);
-    });
+    document.getElementById("profProm").innerText =
+        avg(profs).toFixed(2);
 }
 
 function drawTable(filtered) {
