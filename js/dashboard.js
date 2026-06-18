@@ -12,7 +12,7 @@ let datosFiltrados = [];
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    Papa.parse("datos/SSNMX_catalogo_filtrado.csv", {
+    Papa.parse("/datos/SSNMX_catalogo_filtrado.csv", {
         download: true,
         header: true,
         skipEmptyLines: true,
