@@ -13,19 +13,24 @@ Papa.parse("SSNMX_catalogo_filtrado.csv", {
     header: true,
     skipEmptyLines: true,
 
+    // 🔴 AQUÍ VA TU complete
     complete: function (resultado) {
-    datosOriginales = resultado.data.filter(d =>
-    d.Anio && parseInt(d.Anio) >= 1981
-);
+
+        console.log("CSV cargado:", resultado);
+
+        if (!resultado || !Array.isArray(resultado.data)) {
+            console.error("Datos inválidos del CSV");
+            return;
+        }
+
+        datosOriginales = resultado.data.filter(d =>
+            d && d.Anio && !isNaN(parseInt(d.Anio)) && parseInt(d.Anio) >= 1981
         );
 
-        console.log(
-            "Registros válidos:",
-            datosOriginales.length
-        );
+        console.log("Registros válidos:", datosOriginales.length);
 
-        cargarAnios();
-        aplicarFiltros();
+        if (typeof cargarAnios === "function") cargarAnios();
+        if (typeof aplicarFiltros === "function") aplicarFiltros();
     },
 
     error: function (error) {
