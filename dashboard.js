@@ -9,10 +9,6 @@ let datosFiltrados = [];
 /* ====================================
 CARGAR CSV
 ==================================== */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-```
 Papa.parse("SSNMX_catalogo_filtrado.csv", {
 
     download: true,
@@ -24,17 +20,18 @@ Papa.parse("SSNMX_catalogo_filtrado.csv", {
         datosOriginales = resultado.data
         .filter(d =>
             d.Fecha &&
-            d.Longitud
+            d.Magnitud
         )
         .map(d => ({
 
             Fecha: d.Fecha,
             Hora: d.Hora || "",
-            Magnitud: parseFloat(d.Magnitud),
-            Profundidad: parseFloat(d.Profundidad),
+            Magnitud: parseFloat(d.Magnitud) || 0,
+            Profundidad: parseFloat(d.Profundidad) || 0,
+
             Referencia:
-                d["Referencia"] ||
                 d["Referencia de localizacion"] ||
+                d["Referencia"] ||
                 ""
 
         }));
@@ -56,7 +53,7 @@ Papa.parse("SSNMX_catalogo_filtrado.csv", {
     }
 
 });
-```
+    }
 
 });
 
@@ -227,8 +224,6 @@ Math.max(...magnitudes)
 :
 0;
 
-crearMapa(datos);
-
 crearTabla(datos);
 
 crearGraficaMagnitud(
@@ -280,66 +275,6 @@ ${Math.max(...magnitudes)}
 }
 
 /* ====================================
-MAPA
-==================================== */
-
-function crearMapa(datos){
-
-```
-if(mapa){
-
-    mapa.remove();
-
-}
-
-mapa =
-L.map("map")
-.setView(
-[23.6345,-102.5528],
-5
-);
-
-L.tileLayer(
-"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-).addTo(mapa);
-
-datos
-.slice(0,5000)
-.forEach(d => {
-
-    if(
-        isNaN(d.Latitud) ||
-        isNaN(d.Longitud)
-    ) return;
-
-    L.circleMarker(
-        [d.Latitud,d.Longitud],
-        {
-            radius:
-            Math.max(
-                3,
-                d.Magnitud
-            )
-        }
-    )
-    .addTo(mapa)
-    .bindPopup(
-
-    `<b>Fecha:</b> ${d.Fecha}<br>
-     <b>Hora:</b> ${d.Hora}<br>
-     <b>Magnitud:</b> ${d.Magnitud}<br>
-     <b>Profundidad:</b> ${d.Profundidad} km<br>
-     <b>Ubicación:</b><br>
-     ${d.Referencia}`
-
-    );
-
-});
-```
-
-}
-
-/* ====================================
 TABLA
 ==================================== */
 
@@ -384,11 +319,11 @@ function crearGraficaMagnitud(magnitudes){
 
 ```
 const rangos = {
+    "3-4":0,
     "4-5":0,
     "5-6":0,
     "6-7":0,
     "7+":0
-
 };
 
 magnitudes.forEach(m => {
