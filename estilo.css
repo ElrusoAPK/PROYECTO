@@ -1,264 +1,123 @@
-/* =========================
-   ESTILOS GENERALES
-========================= */
-
-body{
-    background:#f5f7fa;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    transition:all .3s ease;
+/* ===============================
+   ESTILO GENERAL
+================================ */
+body {
+    background: #f4f6f9;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-/* =========================
-   HERO SECTION
-========================= */
-
-.hero{
-    background:linear-gradient(
-    135deg,
-    #0b1727,
-    #1d4ed8
-    );
-
-    color:white;
-
-    padding:120px 20px;
-    text-align:center;
-}
-
-.hero h1{
-    font-size:55px;
-    font-weight:700;
-}
-
-.hero p{
-    font-size:20px;
-    opacity:.9;
-}
-
-/* =========================
-   TARJETAS INFORMATIVAS
-========================= */
-
-.info-card{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
-    height:100%;
-    transition:.3s;
-}
-
-.info-card:hover{
-    transform:translateY(-5px);
-}
-
-/* =========================
-   KPI CARDS
-========================= */
-
-.kpi{
-    background:linear-gradient(
-    135deg,
-    #112240,
-    #1d4ed8
-    );
-
-    color:white;
-
-    padding:30px;
-    border-radius:20px;
-
-    text-align:center;
-
-    box-shadow:0 10px 20px rgba(0,0,0,.15);
-
-    transition:.3s;
-}
-
-.kpi:hover{
-    transform:translateY(-5px);
-}
-
-.kpi h2{
-    font-size:42px;
-    font-weight:bold;
-    margin-bottom:5px;
-}
-
-.kpi p{
-    margin:0;
-    font-size:16px;
-}
-
-/* =========================
-   CARDS
-========================= */
-
-.card{
-    border:none;
-    border-radius:20px;
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
-    transition:.3s;
-}
-
-.card:hover{
-    box-shadow:0 10px 25px rgba(0,0,0,.12);
-}
-
-/* =========================
-   MAPA
-========================= */
-
-#map{
-    height:600px;
-    border-radius:15px;
-    overflow:hidden;
-}
-
-/* =========================
-   GRAFICAS
-========================= */
-
-canvas{
-    max-height:450px;
-}
-
-/* =========================
-   TABLAS
-========================= */
-
-.table{
-    font-size:14px;
-}
-
-.table thead{
-    position:sticky;
-    top:0;
-    z-index:1;
-}
-
-.table-hover tbody tr:hover{
-    background:#e9f2ff;
-}
-
-/* =========================
-   FILTROS
-========================= */
-
-.form-select,
-.form-control{
-    border-radius:12px;
-}
-
-/* =========================
+/* ===============================
    HEADER
-========================= */
-
-header{
-    background:linear-gradient(
-    135deg,
-    #0b1727,
-    #112240
-    );
+================================ */
+header {
+    background: linear-gradient(90deg, #0b1320, #1c2b4a);
 }
 
-/* =========================
-   RESUMEN EJECUTIVO
-========================= */
-
-#resumen{
-    font-size:17px;
-    line-height:1.8;
+/* ===============================
+   KPIs
+================================ */
+.kpi {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: 0.3s ease;
 }
 
-/* =========================
-   MODO OSCURO
-========================= */
-
-.dark{
-    background:#0f172a;
-    color:white;
+.kpi:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
-.dark header{
-    background:#020617 !important;
+.kpi h2 {
+    font-size: 2.2rem;
+    margin: 0;
+    color: #1c2b4a;
 }
 
-.dark .card{
-    background:#1e293b;
-    color:white;
+.kpi p {
+    margin: 0;
+    color: #6c757d;
+    font-weight: bold;
 }
 
-.dark .kpi{
-    background:linear-gradient(
-    135deg,
-    #020617,
-    #0f172a
-    );
+/* ===============================
+   CARDS
+================================ */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
-.dark .table{
-    color:white;
+/* ===============================
+   SELECTS (FILTROS)
+================================ */
+.form-select {
+    border-radius: 10px;
+    padding: 10px;
 }
 
-.dark .table-hover tbody tr:hover{
-    background:#334155;
+/* ===============================
+   TABLA
+================================ */
+table {
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.dark .form-control,
-.dark .form-select{
-    background:#334155;
-    color:white;
-    border:1px solid #475569;
+table thead {
+    background: #1c2b4a;
+    color: white;
 }
 
-.dark .form-control:focus,
-.dark .form-select:focus{
-    background:#334155;
-    color:white;
+table tbody tr:hover {
+    background: #eef3ff;
 }
 
-.dark .alert{
-    background:#14532d;
-    color:white;
-    border:none;
+/* ===============================
+   TITULOS
+================================ */
+h4 {
+    color: #1c2b4a;
+    font-weight: bold;
 }
 
-.dark canvas{
-    background:white;
-    border-radius:10px;
-    padding:10px;
+/* ===============================
+   ALERTA
+================================ */
+.alert {
+    border-radius: 10px;
+    font-weight: 500;
 }
 
-/* =========================
+/* ===============================
+   GRAFICAS
+================================ */
+canvas {
+    max-width: 100%;
+}
+
+/* ===============================
+   BADGES
+================================ */
+.badge {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+/* ===============================
    RESPONSIVE
-========================= */
+================================ */
+@media (max-width: 768px) {
 
-@media(max-width:768px){
-
-    .hero h1{
-        font-size:38px;
+    .kpi h2 {
+        font-size: 1.6rem;
     }
 
-    .kpi h2{
-        font-size:30px;
+    header h1 {
+        font-size: 1.2rem;
     }
-
-    #map{
-        height:450px;
-    }
-
-}
-
-#map{
-    height: 650px;
-    width: 100%;
-}
-
-.kpi{
-    background:#fff;
-    border-radius:12px;
-    padding:20px;
-    text-align:center;
-    box-shadow:0 2px 10px rgba(0,0,0,.1);
 }
