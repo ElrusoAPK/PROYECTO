@@ -1,6 +1,3 @@
-document.addEventListener("DOMContentLoaded", () => {
-
-```
 let chartMagnitud;
 let chartProfundidad;
 let chartAnual;
