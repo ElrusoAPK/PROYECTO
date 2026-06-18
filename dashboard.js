@@ -4,13 +4,6 @@ let chartAnual;
 
 let datosOriginales = [];
 let datosFiltrados = [];
-
-// ===============================
-// VARIABLES GLOBALES
-// ===============================
-let datosOriginales = [];
-let datosFiltrados = [];
-
 // ===============================
 // FUNCIÓN cargarAnios (AQUÍ VA)
 // ===============================
