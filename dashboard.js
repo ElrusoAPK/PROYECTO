@@ -10,8 +10,6 @@ let datosFiltrados = [];
 ==================================== */
 
 Papa.parse("SSNMX_catalogo_filtrado.csv", {
-
-```
 download: true,
 header: true,
 skipEmptyLines: true,
