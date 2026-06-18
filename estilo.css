@@ -1,123 +1,52 @@
-/* ===============================
-   ESTILO GENERAL
-================================ */
 body {
+    font-family: Arial;
+    margin: 0;
     background: #f4f6f9;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ===============================
-   HEADER
-================================ */
 header {
-    background: linear-gradient(90deg, #0b1320, #1c2b4a);
-}
-
-/* ===============================
-   KPIs
-================================ */
-.kpi {
-    background: white;
-    border-radius: 12px;
+    background: #0b1320;
+    color: white;
     padding: 20px;
     text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: 0.3s ease;
 }
 
-.kpi:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+.container {
+    padding: 20px;
 }
 
-.kpi h2 {
-    font-size: 2.2rem;
-    margin: 0;
-    color: #1c2b4a;
+.kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
 }
 
-.kpi p {
-    margin: 0;
-    color: #6c757d;
-    font-weight: bold;
-}
-
-/* ===============================
-   CARDS
-================================ */
 .card {
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
 }
 
-/* ===============================
-   SELECTS (FILTROS)
-================================ */
-.form-select {
-    border-radius: 10px;
+.filters {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+}
+
+select {
     padding: 10px;
-}
-
-/* ===============================
-   TABLA
-================================ */
-table {
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-table thead {
-    background: #1c2b4a;
-    color: white;
-}
-
-table tbody tr:hover {
-    background: #eef3ff;
-}
-
-/* ===============================
-   TITULOS
-================================ */
-h4 {
-    color: #1c2b4a;
-    font-weight: bold;
-}
-
-/* ===============================
-   ALERTA
-================================ */
-.alert {
-    border-radius: 10px;
-    font-weight: 500;
-}
-
-/* ===============================
-   GRAFICAS
-================================ */
-canvas {
-    max-width: 100%;
-}
-
-/* ===============================
-   BADGES
-================================ */
-.badge {
-    font-size: 0.9rem;
-    padding: 8px 12px;
     border-radius: 8px;
 }
 
-/* ===============================
-   RESPONSIVE
-================================ */
-@media (max-width: 768px) {
+table {
+    width: 100%;
+    margin-top: 20px;
+    background: white;
+    border-collapse: collapse;
+}
 
-    .kpi h2 {
-        font-size: 1.6rem;
-    }
-
-    header h1 {
-        font-size: 1.2rem;
-    }
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
 }
