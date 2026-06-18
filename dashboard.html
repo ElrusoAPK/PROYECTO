@@ -2,22 +2,28 @@
 <html lang="es">
 
 <head>
+<!DOCTYPE html>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="es">
 
-    <title>Centro Nacional de Monitoreo Sísmico</title>
+<head>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+```
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet"
-        href="https://unpkg.com/leaflet/dist/leaflet.css">
+<title>
+    Centro Nacional de Análisis Sísmico
+</title>
 
-    <link rel="stylesheet" href="estilos.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="estilos.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+```
 
 </head>
 
@@ -25,228 +31,212 @@
 
 <header class="bg-dark text-white py-4 shadow">
 
-    <div class="container">
+```
+<div class="container">
 
-        <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center">
 
-            <div>
+        <div>
 
-                <h1 class="mb-0">
-                    🌎 Centro Nacional de Monitoreo Sísmico
-                </h1>
+            <h1 class="mb-0">
+                🌎 Centro Nacional de Análisis Sísmico
+            </h1>
 
-                <small>
-                    Plataforma Nacional de Visualización y Análisis de Actividad Sísmica
-                </small>
-
-            </div>
-
-            <span class="badge bg-success fs-6">
-                Sistema Activo
-            </span>
+            <small>
+                Estadísticas y Visualización de Sismos en México (1981 - Actualidad)
+            </small>
 
         </div>
 
+        <span class="badge bg-success fs-6">
+            Sistema Activo
+        </span>
+
     </div>
+
+</div>
+```
 
 </header>
 
 <div class="container-fluid p-4">
 
-    <div class="alert alert-success shadow-sm">
+```
+<div class="alert alert-success shadow-sm">
 
-        📡 Datos cargados automáticamente desde el catálogo sísmico del Servicio Sismológico Nacional (SSN).
+    📡 Datos cargados automáticamente desde el catálogo sísmico del Servicio Sismológico Nacional (SSN).
 
-    </div>
-
-    <!-- KPIs -->
-
-    <div class="row g-4">
-
-        <div class="col-lg-3 col-md-6">
-
-            <div class="kpi">
-
-                <h2 id="total">0</h2>
-
-                <p>Total de Sismos</p>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-
-            <div class="kpi">
-
-                <h2 id="magnitudPromedio">0</h2>
-
-                <p>Magnitud Promedio</p>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-
-            <div class="kpi">
-
-                <h2 id="profundidadPromedio">0</h2>
-
-                <p>Profundidad Promedio</p>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-
-            <div class="kpi">
-
-                <h2 id="maxMagnitud">0</h2>
-
-                <p>Magnitud Máxima</p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- FILTROS -->
-
-    <div class="card mt-4">
-
-        <div class="card-body">
-
-            <h4 class="mb-3">
-                🔍 Filtros de Consulta
-            </h4>
-
-            <div class="row">
-
-                <div class="col-md-6">
-
-                    <label class="form-label">
-                        Año
-                    </label>
-
-                    <select
-                        id="filtroAnio"
-                        class="form-select">
-
-                        <option value="">
-                            Todos los años
-                        </option>
-
-                    </select>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <label class="form-label">
-                        Magnitud
-                    </label>
-
-                    <select
-                        id="filtroMagnitud"
-                        class="form-select">
-
-                        <option value="">
-                            Todas
-                        </option>
-
-                        <option value="3">
-                            Mayor a 3
-                        </option>
-
-                        <option value="5">
-                            Mayor a 5
-                        </option>
-
-                        <option value="7">
-                            Mayor a 7
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- MAPA -->
-
-    <div class="card mt-4">
-
-        <div class="card-body">
-
-            <h4>
-                🗺️ Mapa Nacional de Epicentros
-            </h4>
-            <div class="alert alert-info text-center">
-    Los datos han sido procesados sin coordenadas geográficas.
 </div>
 
-        </div>
+<!-- KPIs -->
 
-    </div>
+<div class="row g-4">
 
-    <!-- GRAFICA ANUAL -->
+    <div class="col-lg-3 col-md-6">
 
-    <div class="card mt-4">
+        <div class="kpi">
 
-        <div class="card-body">
+            <h2 id="total">0</h2>
 
-            <h4>
-                📈 Sismos Registrados por Año
-            </h4>
-
-            <canvas id="graficaAnual"></canvas>
+            <p>Total de Sismos</p>
 
         </div>
 
     </div>
 
-    <!-- GRAFICAS -->
+    <div class="col-lg-3 col-md-6">
 
-    <div class="row mt-4">
+        <div class="kpi">
 
-        <div class="col-lg-6">
+            <h2 id="magnitudPromedio">0</h2>
 
-            <div class="card">
+            <p>Magnitud Promedio</p>
 
-                <div class="card-body">
+        </div>
 
-                    <h4>
-                        📊 Distribución de Magnitudes
-                    </h4>
+    </div>
 
-                    <canvas id="graficaMagnitud"></canvas>
+    <div class="col-lg-3 col-md-6">
 
-                </div>
+        <div class="kpi">
+
+            <h2 id="profundidadPromedio">0</h2>
+
+            <p>Profundidad Promedio</p>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="kpi">
+
+            <h2 id="maxMagnitud">0</h2>
+
+            <p>Magnitud Máxima</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FILTROS -->
+
+<div class="card mt-4 shadow-sm">
+
+    <div class="card-body">
+
+        <h4 class="mb-3">
+            🔍 Filtros de Consulta
+        </h4>
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Año
+                </label>
+
+                <select
+                    id="filtroAnio"
+                    class="form-select">
+
+                    <option value="">
+                        Todos los años
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Magnitud
+                </label>
+
+                <select
+                    id="filtroMagnitud"
+                    class="form-select">
+
+                    <option value="">
+                        Todas
+                    </option>
+
+                    <option value="3">
+                        Mayor o igual a 3
+                    </option>
+
+                    <option value="5">
+                        Mayor o igual a 5
+                    </option>
+
+                    <option value="6">
+                        Mayor o igual a 6
+                    </option>
+
+                    <option value="7">
+                        Mayor o igual a 7
+                    </option>
+
+                </select>
 
             </div>
 
         </div>
 
-        <div class="col-lg-6">
+    </div>
 
-            <div class="card">
+</div>
 
-                <div class="card-body">
+<!-- INFORMACIÓN DATASET -->
 
-                    <h4>
-                        📉 Distribución de Profundidades
-                    </h4>
+<div class="card mt-4 shadow-sm">
 
-                    <canvas id="graficaProfundidad"></canvas>
+    <div class="card-body">
 
-                </div>
+        <h4>
+            📂 Información del Conjunto de Datos
+        </h4>
+
+        <div class="row text-center mt-3">
+
+            <div class="col-md-4">
+
+                <h5>
+                    📅 Periodo Analizado
+                </h5>
+
+                <p>
+                    1981 - Actualidad
+                </p>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <h5>
+                    📈 Magnitud Mínima
+                </h5>
+
+                <p>
+                    3.0
+                </p>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <h5>
+                    🗃️ Fuente
+                </h5>
+
+                <p>
+                    Servicio Sismológico Nacional
+                </p>
 
             </div>
 
@@ -254,49 +244,39 @@
 
     </div>
 
-    <!-- TABLA -->
+</div>
 
-    <div class="card mt-4">
+<!-- GRAFICA ANUAL -->
 
-        <div class="card-body">
+<div class="card mt-4 shadow-sm">
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="card-body">
 
-                <h4 class="mb-0">
-                    📋 Historial de Eventos Sísmicos
+        <h4>
+            📈 Sismos Registrados por Año
+        </h4>
+
+        <canvas id="graficaAnual"></canvas>
+
+    </div>
+
+</div>
+
+<!-- GRAFICAS -->
+
+<div class="row mt-4">
+
+    <div class="col-lg-6">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h4>
+                    📊 Distribución de Magnitudes
                 </h4>
 
-                <span class="badge bg-primary">
-                    Últimos 100 registros
-                </span>
-
-            </div>
-
-            <div class="table-responsive">
-
-                <table
-                    id="tablaSismos"
-                    class="table table-striped table-hover align-middle">
-
-                    <thead class="table-dark">
-
-                        <tr>
-
-                            <th>Fecha</th>
-                            <th>Hora</th>
-                            <th>Magnitud</th>
-                            <th>Profundidad (km)</th>
-                            <th>Ubicación</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                    </tbody>
-
-                </table>
+                <canvas id="graficaMagnitud"></canvas>
 
             </div>
 
@@ -304,19 +284,19 @@
 
     </div>
 
-    <!-- RESUMEN -->
+    <div class="col-lg-6">
 
-    <div class="card mt-4">
+        <div class="card shadow-sm">
 
-        <div class="card-body">
+            <div class="card-body">
 
-            <h4>
-                📑 Resumen Ejecutivo
-            </h4>
+                <h4>
+                    📉 Distribución de Profundidades
+                </h4>
 
-            <p id="resumen">
-                Analizando catálogo sísmico...
-            </p>
+                <canvas id="graficaProfundidad"></canvas>
+
+            </div>
 
         </div>
 
@@ -324,9 +304,86 @@
 
 </div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- TABLA -->
+
+<div class="card mt-4 shadow-sm">
+
+    <div class="card-body">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <h4 class="mb-0">
+                📋 Historial de Eventos Sísmicos
+            </h4>
+
+            <span class="badge bg-primary">
+                Top 200 sismos por magnitud
+            </span>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table
+                id="tablaSismos"
+                class="table table-striped table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Magnitud</th>
+                        <th>Profundidad (km)</th>
+                        <th>Ubicación</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- RESUMEN -->
+
+<div class="card mt-4 shadow-sm">
+
+    <div class="card-body">
+
+        <h4>
+            📑 Resumen Ejecutivo
+        </h4>
+
+        <p id="resumen">
+            Cargando información sísmica nacional...
+        </p>
+
+    </div>
+
+</div>
+```
+
+</div>
 
 <script src="dashboard.js"></script>
+
+<script>
+
+console.log(
+    "Sistema de monitoreo sísmico iniciado"
+);
+
+</script>
 
 </body>
 
