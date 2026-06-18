@@ -4,14 +4,12 @@ let markers = [];
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    // MAPA BASE
-    map = L.map('map').setView([23.6, -102.5], 5);
+    map = L.map("map").setView([23.6, -102.5], 5);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap'
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "OpenStreetMap"
     }).addTo(map);
 
-    // CARGAR CSV
     Papa.parse("SSNMX_catalogo_filtrado.csv", {
         download: true,
         header: true,
@@ -21,19 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             data = res.data.map(d => {
 
-                const lat = parseFloat(d.Latitud || d.lat);
-                const lon = parseFloat(d.Longitud || d.lon);
-
-                const mag = parseFloat(d.Magnitud || d.magnitud);
-                const depth = parseFloat(d.Profundidad || d.profundidad);
-
                 const fecha = new Date(d.Fecha || d.fecha);
 
                 return {
-                    lat,
-                    lon,
-                    mag,
-                    depth,
+                    lat: parseFloat(d.Latitud || d.lat),
+                    lon: parseFloat(d.Longitud || d.lon),
+                    mag: parseFloat(d.Magnitud || d.magnitud),
+                    depth: parseFloat(d.Profundidad || d.profundidad),
                     fecha
                 };
 
@@ -44,58 +36,123 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             cargarAnios();
-            renderMarkers();
+            render();
         }
     });
 
-    document.getElementById("filtroMag").onchange = renderMarkers;
-    document.getElementById("filtroAnio").onchange = renderMarkers;
+    document.getElementById("btnFiltrar").onclick = render;
 });
 
 function cargarAnios() {
 
-    const sel = document.getElementById("filtroAnio");
-
     const years = [...new Set(data.map(d => d.fecha.getFullYear()))].sort();
 
-    sel.innerHTML = `<option value="">Todos los años</option>`;
+    const ini = document.getElementById("anioInicio");
+    const fin = document.getElementById("anioFin");
+
+    ini.innerHTML = "";
+    fin.innerHTML = "";
 
     years.forEach(y => {
-        sel.innerHTML += `<option value="${y}">${y}</option>`;
+        ini.innerHTML += `<option value="${y}">${y}</option>`;
+        fin.innerHTML += `<option value="${y}">${y}</option>`;
     });
+
+    ini.value = years[0];
+    fin.value = years[years.length - 1];
 }
 
-function renderMarkers() {
+function render() {
+
+    const ini = parseInt(document.getElementById("anioInicio").value);
+    const fin = parseInt(document.getElementById("anioFin").value);
+
+    const filtered = data.filter(d => {
+        const y = d.fecha.getFullYear();
+        return y >= ini && y <= fin;
+    });
+
+    drawMap(filtered);
+    drawTable(filtered);
+    spearman(filtered);
+}
+
+function drawMap(filtered) {
 
     markers.forEach(m => map.removeLayer(m));
     markers = [];
 
-    const magFilter = parseFloat(document.getElementById("filtroMag").value);
-    const yearFilter = document.getElementById("filtroAnio").value;
-
-    data.forEach(d => {
-
-        if (magFilter && d.mag < magFilter) return;
-        if (yearFilter && d.fecha.getFullYear() != yearFilter) return;
+    filtered.forEach(d => {
 
         const color =
             d.mag >= 7 ? "red" :
             d.mag >= 6 ? "orange" :
-            d.mag >= 5 ? "yellow" :
-            "blue";
+            d.mag >= 5 ? "yellow" : "blue";
 
-        const marker = L.circleMarker([d.lat, d.lon], {
+        const m = L.circleMarker([d.lat, d.lon], {
             radius: d.mag * 2,
             color,
             fillOpacity: 0.7
         }).addTo(map);
 
-        marker.bindPopup(`
+        m.bindPopup(`
             <b>Magnitud:</b> ${d.mag}<br>
-            <b>Profundidad:</b> ${d.depth} km<br>
+            <b>Profundidad:</b> ${d.depth}<br>
             <b>Fecha:</b> ${d.fecha.toLocaleString()}
         `);
 
-        markers.push(marker);
+        markers.push(m);
     });
+}
+
+function drawTable(filtered) {
+
+    const tbody = document.getElementById("tabla");
+    tbody.innerHTML = "";
+
+    filtered.slice(0, 100).forEach(d => {
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${d.fecha.toLocaleDateString()}</td>
+                <td>${d.mag}</td>
+                <td>${d.depth}</td>
+            </tr>
+        `;
+    });
+}
+
+function spearman(data) {
+
+    const x = data.map(d => d.mag);
+    const y = data.map(d => d.depth);
+
+    const rank = arr =>
+        arr.map((v, i) => ({
+            v,
+            i
+        }))
+        .sort((a, b) => a.v - b.v)
+        .map((o, i) => ({
+            ...o,
+            r: i + 1
+        }))
+        .sort((a, b) => a.i - b.i)
+        .map(o => o.r);
+
+    const rx = rank(x);
+    const ry = rank(y);
+
+    const n = x.length;
+
+    let d2 = 0;
+
+    for (let i = 0; i < n; i++) {
+        d2 += Math.pow(rx[i] - ry[i], 2);
+    }
+
+    const rho = 1 - (6 * d2) / (n * (n*n - 1));
+
+    document.getElementById("spearman").innerText =
+        isNaN(rho) ? "Sin datos" : rho.toFixed(4);
 }
