@@ -228,32 +228,40 @@ function crearMapa(datos){
 
     if(mapa) mapa.remove();
 
-    mapa = L.map("map").setView([23.6345,-102.5528], 5);
+    mapa = L.map("map").setView([23.6345, -102.5528], 5);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
     .addTo(mapa);
 
-    datos.slice(0,300).forEach(d => {
+    // 1. contar sismos por estado
+    const conteoEstados = {};
 
-        const lat = parseFloat(d.Latitud);
-        const lon = parseFloat(d.Longitud);
+    datos.forEach(d => {
 
-        if(!isNaN(lat) && !isNaN(lon)){
+        const estado = limpiarEstado(d["Referencia de localizacion"]);
 
-            L.marker([lat,lon])
-            .addTo(mapa)
-            .bindPopup(`
-                <b>Fecha:</b> ${d.Fecha}<br>
-                <b>Magnitud:</b> ${d.Magnitud}<br>
-                <b>Profundidad:</b> ${d.Profundidad} km<br>
-                <b>Ubicación:</b><br>
-                ${d["Referencia de localizacion"]}
-            `);
+        if(!estado) return;
 
-        }
-
+        conteoEstados[estado] = (conteoEstados[estado] || 0) + 1;
     });
 
+    // 2. pintar markers
+    Object.keys(conteoEstados).forEach(estado => {
+
+        const coords = estadosCoords[estado];
+
+        if(!coords) return;
+
+        const cantidad = conteoEstados[estado];
+
+        L.marker(coords)
+        .addTo(mapa)
+        .bindPopup(`
+            <b>${estado}</b><br>
+            Sismos registrados: <b>${cantidad}</b>
+        `);
+
+    });
 }
 
 /* ====================================
