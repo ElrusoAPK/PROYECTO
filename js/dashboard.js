@@ -347,6 +347,18 @@ function crearGraficaAnual(datos){
 
     });
 
+    function limpiarEstado(texto){
+
+    if(!texto) return null;
+
+    return texto
+        .toUpperCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .split(",")[0] // toma primer estado si hay varios
+        .trim();
+}
+
     const labels = Object.keys(conteo).sort((a,b)=>a-b);
     const valores = labels.map(l => conteo[l]);
 
